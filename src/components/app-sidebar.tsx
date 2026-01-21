@@ -1,5 +1,6 @@
 import * as React from "react";
-
+import Link from "next/link";
+import { userroutes } from "@/routes/userroutes";
 import { SearchForm } from "@/components/search-form";
 import { VersionSwitcher } from "@/components/version-switcher";
 import {
@@ -8,12 +9,14 @@ import {
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  SidebarHeader,
+  
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
+import { adminroutes } from "@/routes/adminroutes";
+import { Routes } from "@/tyPe/rotutes";
 
 // This is sample data.
 const data = {
@@ -28,8 +31,12 @@ const data = {
           url: "/dashboard/Writeblog",
         },
         {
-          title: "Analytics",
-          url: "/dashboard/analytics",
+          title: "Admin Dashboard",
+          url: "/admin-dashboar",
+        },
+        {
+          title: "User Dashboard",
+          url: "/user-dashboard",
         },
       ],
     },
@@ -39,13 +46,29 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({user, ...props }: {user: {role: string} } & React.ComponentProps<typeof Sidebar>) {
+  let routes: Routes[] = []
+
+  switch (user.role) {
+    case "admin":
+      routes =adminroutes
+      break;
+    case "user":
+      routes =userroutes
+      break;
+    default:
+      routes =[]
+      break;
+
+  }
+
+
   return (
     <Sidebar {...props}>
       
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
+        {routes.map((item) => (
           <SidebarGroup key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
@@ -53,7 +76,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 {item.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton asChild>
-                      <a href={item.url}>{item.title}</a>
+                      <Link href={item.url}>{item.title}</Link>
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 ))}
