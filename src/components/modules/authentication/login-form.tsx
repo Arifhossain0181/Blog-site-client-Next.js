@@ -26,9 +26,11 @@ export function LoginForm({
   const handleGoogleLogin = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "http://localhost:3000",
     })
   }
+  const session =  authClient.useSession()
+  console.log("Current session:", session)
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>

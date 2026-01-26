@@ -22,8 +22,9 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const handleGoogleSignup = async () => {
     await authClient.signIn.social({
       provider: "google",
-      callbackURL: "/dashboard",
+      callbackURL: "http://localhost:3000",
     })
+    console.log("Google signup initiated")
   }
   return (
     <Card {...props}>

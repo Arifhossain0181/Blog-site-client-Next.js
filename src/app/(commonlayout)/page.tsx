@@ -1,10 +1,25 @@
 import { Button } from "@/components/ui/button";
-import { authClient } from "@/lib/auth-client";
 
+import { cookies } from "next/headers";
 
 export default async function Home() {
-  const session = await authClient.getSession()
-  console.log("Session:", session);
+
+
+  const cookiesStore = await cookies()
+  console.log(cookiesStore.getAll())
+
+
+
+  const res = await fetch("http://localhost:5000/api/auth/get-session",{
+    headers: {
+      Cookie:cookiesStore.toString()
+    },
+    cache:"no-store"
+  } );
+  const session = await res.json();
+  console.log("Session from server:", session);
+
+  
   return (
     <div className="">
       <Button>Click me</Button>
