@@ -41,4 +41,15 @@ export const blogsservice = {
       return { data: null, error: err };
     }
   },
+  getBlogBYid: async function(id:string){
+    try{
+      const res = await fetch(`${BLOG_API_URL}/posts/${id}`);
+      const data = await res.json();
+      return {data:data,error:null};
+    }
+    catch(err){
+      console.log("Error fetching blog post by id:",err);
+      return {data:null,error:err};
+    }
+  }
 };
