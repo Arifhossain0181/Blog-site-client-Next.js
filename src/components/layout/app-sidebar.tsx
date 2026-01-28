@@ -1,8 +1,8 @@
 import * as React from "react";
 import Link from "next/link";
 import { userroutes } from "@/routes/userroutes";
-import { SearchForm } from "@/components/search-form";
-import { VersionSwitcher } from "@/components/version-switcher";
+import { SearchForm } from "@/components/layout/search-form";
+import { VersionSwitcher } from "@/components/layout/version-switcher";
 import {
   Sidebar,
   SidebarContent,

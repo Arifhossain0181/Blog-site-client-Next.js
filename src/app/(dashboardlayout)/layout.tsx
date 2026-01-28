@@ -1,4 +1,4 @@
-import { AppSidebar } from "@/components/app-sidebar"
+import { AppSidebar } from "@/components/layout/app-sidebar"
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -13,10 +13,11 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar"
-import React, { Children } from "react"
+import React from "react"
+import { userService } from "@/services/user.service"
+import { redirect } from "next/navigation"
 
-export default function DashboardLayout({
-  
+export default async function DashboardLayout({
   admin,
   user
 }: {
@@ -24,9 +25,18 @@ export default function DashboardLayout({
   admin: React.ReactNode;
   user: React.ReactNode;
 }) {
-  const userinfo ={
-    role: "admin"
-    
+  // Check authentication
+  const { data: session, error } = await userService.getSession();
+  
+  // If no session, redirect to login
+  if (error || !session) {
+    redirect('/login?redirect=/dashboard');
+  }
+  
+  // Get user info from session
+  const userinfo = {
+    role: session.user?.role || "user", // Use actual role from session
+    ...session.user
   }
 
 
