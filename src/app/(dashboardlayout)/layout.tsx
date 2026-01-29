@@ -16,8 +16,10 @@ import {
 import React from "react"
 import { userService } from "@/services/user.service"
 import { redirect } from "next/navigation"
+import { ROLE } from "@/constants/role"
 
 export default async function DashboardLayout({
+  children,
   admin,
   user
 }: {
@@ -34,11 +36,20 @@ export default async function DashboardLayout({
   }
   
   // Get user info from session
-  const userinfo = {
-    role: session.user?.role || "user", // Use actual role from session
-    ...session.user
-  }
+  const {data: sessionData} = await userService.getSession()
+  console.log("datas", sessionData)
+  const userinfo = sessionData?.user;
+  console.log("userinfo:", userinfo)
 
+  // Determine what content to show
+  let content: React.ReactNode;
+  if (children) {
+    content = children;
+  } else if (userinfo?.role === ROLE.ADMIN) {
+    content = admin;
+  } else {
+    content = user;
+  }
 
   return (
     <SidebarProvider>
@@ -50,22 +61,10 @@ export default async function DashboardLayout({
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className="hidden md:block">
-                <BreadcrumbLink href="#">
-                  Building Your Application
-                </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className="hidden md:block" />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+         
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
-            {userinfo.role === "admin" ? admin : user}
+            {content}
         </div>
       </SidebarInset>
     </SidebarProvider>

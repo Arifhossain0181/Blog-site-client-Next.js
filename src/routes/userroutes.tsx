@@ -12,8 +12,8 @@ export const userroutes = [
         },
         
         {
-          title: "User Dashboard",
-          url: "/user-dashboard",
+          title: "Create Blog",
+          url: "/dashboard/create-blog",
         },
       ],
     },

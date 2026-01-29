@@ -1,15 +1,13 @@
 import * as React from "react";
 import Link from "next/link";
 import { userroutes } from "@/routes/userroutes";
-import { SearchForm } from "@/components/layout/search-form";
-import { VersionSwitcher } from "@/components/layout/version-switcher";
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
-  
+  SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
@@ -17,73 +15,62 @@ import {
 } from "@/components/ui/sidebar";
 import { adminroutes } from "@/routes/adminroutes";
 import { Routes } from "@/tyPe/rotutes";
+import { ROLE } from "@/constants/role";
 
-// This is sample data.
-const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
-  navMain: [
-    {
-      title: "Getting Started",
-      url: "#",
-      items: [
-        {
-          title: "Write Blog",
-          url: "/dashboard/Writeblog",
-        },
-        {
-          title: "Admin Dashboard",
-          url: "/admin-dashboar",
-        },
-        {
-          title: "User Dashboard",
-          url: "/user-dashboard",
-        },
-      ],
-    },
-    
-    
-    
-  ],
-};
-
-export function AppSidebar({user, ...props }: {user: {role: string} } & React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({user, ...props }: {user?: {role: string} } & React.ComponentProps<typeof Sidebar>) {
   let routes: Routes[] = []
 
-  switch (user.role) {
-    case "admin":
-      routes =adminroutes
+  console.log("User in sidebar:", user);
+  console.log("User role:", user?.role);
+
+  switch (user?.role) {
+    case ROLE.ADMIN:
+      console.log("Loading admin routes");
+      routes = adminroutes
       break;
-    case "user":
-      routes =userroutes
+    case ROLE.USER:
+      console.log("Loading user routes");
+      routes = userroutes
       break;
     default:
-      routes =[]
+      console.log("No role match, using user routes as default");
+      routes = userroutes // Default to user routes if no role matches
       break;
-
   }
+
+  console.log("Routes to display:", routes);
 
 
   return (
     <Sidebar {...props}>
-      
+      <SidebarHeader>
+        <div className="flex items-center gap-2 px-2 py-4">
+          <h2 className="text-lg font-semibold">Blog Dashboard</h2>
+        </div>
+      </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
-        {routes.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
-            <SidebarGroupContent>
-              <SidebarMenu>
-                {item.items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild>
-                      <Link href={item.url}>{item.title}</Link>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                ))}
-              </SidebarMenu>
-            </SidebarGroupContent>
-          </SidebarGroup>
-        ))}
+        {routes.length === 0 ? (
+          <div className="px-4 py-2 text-sm text-muted-foreground">
+            No routes available
+          </div>
+        ) : (
+          routes.map((item) => (
+            <SidebarGroup key={item.title}>
+              <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+              <SidebarGroupContent>
+                <SidebarMenu>
+                  {item.items.map((subItem) => (
+                    <SidebarMenuItem key={subItem.title}>
+                      <SidebarMenuButton asChild>
+                        <Link href={subItem.url}>{subItem.title}</Link>
+                      </SidebarMenuButton>
+                    </SidebarMenuItem>
+                  ))}
+                </SidebarMenu>
+              </SidebarGroupContent>
+            </SidebarGroup>
+          ))
+        )}
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

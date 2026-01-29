@@ -115,8 +115,35 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
             <Button type="submit" className="w-full">Login</Button>
           </div>
         </form>
+
+        <div className="relative my-4">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              Or continue with
+            </span>
+          </div>
+        </div>
+
+        <Button 
+          type="button" 
+          variant="outline" 
+          className="w-full"
+          onClick={handleGoogleLogin}
+        >
+         
+          Continue with Google
+        </Button>
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex flex-col space-y-2">
+        <p className="text-sm text-muted-foreground text-center">
+          Don&apos;t have an account?{" "}
+          <a href="/register" className="text-primary hover:underline">
+            Sign up
+          </a>
+        </p>
       </CardFooter>
     </Card>
   )
